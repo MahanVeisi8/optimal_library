@@ -30,10 +30,40 @@ public class Person {
             System.out.println("No such person");
         }
         else {
+            int sum = 0;
             int indexOfStart = findIndexOfStart(tmp, start);
-            int indexOfEnd = findIndexOfEnd(tmp, end);
+            int startArr = tmp.timeInList.array[indexOfStart];
+            int endArr;
+            int sumArr;
+            //checking if the person is still in the library (has not left)
+            boolean hasLeft = true;
+            if (tmp.timeOutList.array[tmp.timeInList.index - 1] == 0){
+                hasLeft = false;
+                endArr = BookStore.time;
+                sumArr = tmp.sumOfTime.array[tmp.sumOfTime.index - 1] + endArr - startArr;
+            }
+            else {
+                int indexOfEnd = findIndexOfEnd(tmp, end);
+                endArr = tmp.timeOutList.array[indexOfEnd];
+                sumArr = tmp.sumOfTime.array[indexOfEnd];
+            }
+            //calculating the sum
+            int endOfPeriod = endArr - end;
+            if (endOfPeriod < 0){
+                endOfPeriod = 0;
+            }
+            int startOfPeriod = start - startArr;
+            if (startOfPeriod < 0){
+                startOfPeriod = 0;
+            }
+            int beforeSum = 0;
+            if (indexOfStart > 0){
+                beforeSum = tmp.sumOfTime.array[indexOfStart - 1];
+            }
+            sum = sumArr - beforeSum - endOfPeriod - startOfPeriod;
+            System.out.println(name + " has been in the library for " + sum + " time units");
         }
-
+        BookStore.time++;
     }
 
     public int findIndexOfStart(Trie.TrieNode tmp, int start){ // O(log n)
@@ -83,11 +113,6 @@ public class Person {
             }
             avg = (least + most) / 2;
         }
-        if (end > timeOutList.array[avg]){
-            return avg;
-        }
-        else{ //end is even smaller that the smallest timeOut
-            return avg - 1;
-        }
+        return timeOutList.index - 1;
     }
 }

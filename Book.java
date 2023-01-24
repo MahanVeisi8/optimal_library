@@ -8,5 +8,6 @@ public class Book {
     public void addNewBook(String name, int count){
         Trie.TrieNode tmp = Trie.TrieNode.insert(root, name);
         tmp.numberOfBooks = count;
+        BookStore.time++;
     }
 }

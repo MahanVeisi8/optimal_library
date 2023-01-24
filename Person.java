@@ -30,15 +30,13 @@ public class Person {
             System.out.println("No such person");
         }
         else {
-            int sum = 0;
+            int sum;
             int indexOfStart = findIndexOfStart(tmp, start);
             int startArr = tmp.timeInList.array[indexOfStart];
             int endArr;
             int sumArr;
             //checking if the person is still in the library (has not left)
-            boolean hasLeft = true;
             if (tmp.timeOutList.array[tmp.timeInList.index - 1] == 0){
-                hasLeft = false;
                 endArr = BookStore.time;
                 sumArr = tmp.sumOfTime.array[tmp.sumOfTime.index - 1] + endArr - startArr;
             }
@@ -113,6 +111,8 @@ public class Person {
             }
             avg = (least + most) / 2;
         }
-        return timeOutList.index - 1;
+//        return timeOutList.index - 1;
+//        if (end < tim)
+        return avg;
     }
 }

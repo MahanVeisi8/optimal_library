@@ -10,7 +10,11 @@ public class Trie {
         MyArrayList timeOutList = new MyArrayList();
 //        int endTime;
         MyArrayList sumOfTime = new MyArrayList();
-        int numberOfBooks;
+        int numberOfBooks = 0;
+        int numberOfBooksTaken = 0;
+        TrieNode booksOfPerson;
+        TrieNode personsOfBook;
+        boolean isDeleted = false;
 
         TrieNode() {
             isEndOfWord = false;

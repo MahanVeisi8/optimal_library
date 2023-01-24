@@ -5,13 +5,13 @@ public class Person {
         this.root = new Trie.TrieNode();
     }
 
-    public void arrive(String name){
+    public void arrive(String name){    //O(len(name))
         Trie.TrieNode tmp = Trie.TrieNode.insert(root, name);
         tmp.timeInList.insertToList(BookStore.time);
         BookStore.time++;
     }
 
-    public void exit(String name){
+    public void exit(String name){  //O(len(name))
         Trie.TrieNode tmp = Trie.TrieNode.insert(root, name);
         tmp.timeOutList.insertToList(BookStore.time);
         if (tmp.sumOfTime.index == 0){
@@ -24,7 +24,21 @@ public class Person {
         BookStore.time++;
     }
 
-    public void totalTimeInLib(String name, int start, int end){
+    public void isInLib(String name){   //O(len(name))
+        Trie.TrieNode tmp = Trie.TrieNode.search(root, name);
+        if (tmp == null){
+            System.out.println("NO");
+        }
+        else if (tmp.timeOutList.array[tmp.timeInList.index - 1] == 0) {
+            System.out.println("Yes");
+        }
+        else{
+            System.out.println("NO");
+        }
+    }
+
+
+    public void totalTimeInLib(String name, int start, int end){    //O(len(name) + log(number of entries and exits))
         Trie.TrieNode tmp = Trie.TrieNode.search(root, name);
         if (tmp == null){
             System.out.println("No such person");
@@ -63,6 +77,31 @@ public class Person {
         }
         BookStore.time++;
     }
+
+
+    public void shouldBring(String bookName, String personName, Book book){    //O(len(bookName) + len(personName))
+        // O(len(personName + bookName))
+        Trie.TrieNode person = Trie.TrieNode.search(root, personName);
+        Trie.TrieNode bookNode = Trie.TrieNode.search(book.root, bookName);
+
+        if (person == null || bookNode == null){
+//            System.out.println("No such person");
+//            System.out.println("No such book");
+            return;
+        }
+        //if is in lib
+        if (person.timeOutList.array[person.timeInList.index - 1] == 0){// O(len(personName + bookName))
+            if (bookNode.numberOfBooks > 0){
+                bookNode.numberOfBooks--;
+                bookNode.personsOfBook = new Trie.TrieNode();
+                Trie.TrieNode.insert(bookNode.personsOfBook, personName);
+                person.booksOfPerson = new Trie.TrieNode();
+                Trie.TrieNode.insert(person.booksOfPerson, bookName);
+            }
+        }
+    }
+
+
 
     public int findIndexOfStart(Trie.TrieNode tmp, int start){ // O(log n)
         MyArrayList timeInList = tmp.timeInList;
@@ -115,4 +154,5 @@ public class Person {
 //        if (end < tim)
         return avg;
     }
+
 }

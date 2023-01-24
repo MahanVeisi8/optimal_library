@@ -9,12 +9,13 @@ public class BookStore {
         Person person = new Person();
         Book book = new Book();
         person.arrive("john"); //0
-        person.arrive("jane"); //1
-        book.addNewBook("booka", 3);//2
-        person.exit("john"); //3
-        person.arrive("john"); //4
-        person.exit("john"); //5
-        person.exit("jane"); //6
-        person.totalTimeInLib("john", 2, 8); //7
+        book.addNewBook("booka", 1);// 1
+        person.arrive("jane"); // 2
+        person.shouldBring("booka", "john", book); // 3
+        person.shouldBring("booka", "jane", book); // 4
+        person.exit("john"); // 5
+        person.exit("jane"); // 6
+
+
     }
 }

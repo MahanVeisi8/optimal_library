@@ -8,14 +8,17 @@ public class BookStore {
     public static void main(String[] args) {
         Person person = new Person();
         Book book = new Book();
-        person.arrive("john"); //0
-        book.addNewBook("booka", 1);// 1
-        person.arrive("jane"); // 2
-        person.shouldBring("booka", "john", book); // 3
-        person.shouldBring("booka", "jane", book); // 4
-        person.exit("john"); // 5
-        person.exit("jane"); // 6
-
+        Book allBookBorrowed = new Book();
+        person.arrive("ab"); //0
+        book.addNewBook("zz", 1, allBookBorrowed);// 1
+        book.addNewBook("zz", 1, allBookBorrowed);// 2
+        person.arrive("aa"); // 2
+        person.shouldBring("zz", "ab", book, allBookBorrowed); // 3
+        person.shouldBring("zz", "aa", book, allBookBorrowed); // 4
+        person.returnBook("zz", "ab", book); // 5
+        person.exit("ab"); // 5
+        person.exit("aa"); // 6
+        person.returnBook("zz", "aa", book); // 7
 
     }
 }

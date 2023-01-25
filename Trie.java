@@ -14,7 +14,6 @@ public class Trie {
         int numberOfBooksTaken = 0;
         TrieNode booksOfPerson;
         TrieNode personsOfBook;
-        boolean isDeleted = false;
 
         TrieNode() {
             isEndOfWord = false;
@@ -59,10 +58,37 @@ public class Trie {
             return null;
         }
 
+        static TrieNode remove(Trie.TrieNode root, String name, int stage){ //O(len(name))
+            if (root == null){
+                return null;
+            }
+            if (stage == name.length()){
 
+                root.isEndOfWord = false;
+                if (root.isEmpty(root)){//O(1)
+                    root = null;
+                }
+                return root;
+            }
+            else {
+                int index = name.charAt(stage) - 'a';
+                root.children[index] = remove(root.children[index], name, stage + 1);
+                if (root.isEmpty(root) && !root.isEndOfWord){
+                    root = null;
+                }
+                return root;
+            }
+        }
 
+        static boolean isEmpty(TrieNode root){
+            for (int i=0; i<alphabetSize; i++){//if all children are null then it is empty
+                if (root.children[i] != null){
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
-
-
 }
+

@@ -1,6 +1,6 @@
 public class Person {
     Trie.TrieNode root;
-
+    int alphabetSize = 26;
     Person(){
         this.root = new Trie.TrieNode();
     }
@@ -29,8 +29,8 @@ public class Person {
         if (tmp == null){
             System.out.println("NO");
         }
-        else if (tmp.timeOutList.array[tmp.timeInList.index - 1] == 0) {
-            System.out.println("Yes");
+        else if (tmp.timeInList.index > tmp.timeOutList.index){
+            System.out.println("YES");
         }
         else{
             System.out.println("NO");
@@ -50,7 +50,7 @@ public class Person {
             int endArr;
             int sumArr;
             //checking if the person is still in the library (has not left)
-            if (tmp.timeOutList.array[tmp.timeInList.index - 1] == 0){
+            if (tmp.timeInList.index > tmp.timeOutList.index){
                 endArr = BookStore.time;
                 sumArr = tmp.sumOfTime.array[tmp.sumOfTime.index - 1] + endArr - startArr;
             }
@@ -79,26 +79,109 @@ public class Person {
     }
 
 
-    public void shouldBring(String bookName, String personName, Book book){    //O(len(bookName) + len(personName))
+    public void shouldBring(String bookName, String personName, Book book, Book allBookBorrowed){    //O(len(bookName) + len(personName))
         // O(len(personName + bookName))
         Trie.TrieNode person = Trie.TrieNode.search(root, personName);
         Trie.TrieNode bookNode = Trie.TrieNode.search(book.root, bookName);
+        Trie.TrieNode bookNode2 = Trie.TrieNode.search(allBookBorrowed.root, bookName);
 
-        if (person == null || bookNode == null){
+        if (person == null || bookNode == null || bookNode2 == null){
 //            System.out.println("No such person");
 //            System.out.println("No such book");
             return;
         }
         //if is in lib
-        if (person.timeOutList.array[person.timeInList.index - 1] == 0){// O(len(personName + bookName))
-            if (bookNode.numberOfBooks > 0){
-                bookNode.numberOfBooks--;
-                bookNode.personsOfBook = new Trie.TrieNode();
+        if (person.timeInList.index > person.timeOutList.index){    // O(len(personName + bookName))
+            if (bookNode.numberOfBooks - bookNode.numberOfBooksTaken > 0){
+                bookNode.numberOfBooksTaken++;
+                if (bookNode.personsOfBook == null){
+                    bookNode.personsOfBook = new Trie.TrieNode();
+                }
+                if (bookNode2.personsOfBook == null){
+                    bookNode2.personsOfBook = new Trie.TrieNode();
+                }
                 Trie.TrieNode.insert(bookNode.personsOfBook, personName);
-                person.booksOfPerson = new Trie.TrieNode();
+                Trie.TrieNode.insert(bookNode2.personsOfBook, personName);
+                if (person.booksOfPerson == null){
+                    person.booksOfPerson = new Trie.TrieNode();
+                }
                 Trie.TrieNode.insert(person.booksOfPerson, bookName);
             }
         }
+    }
+
+    public void borrowBook(String bookName, String personName, Book book, Book allBookBorrowed){    //O(len(bookName) + len(personName))
+        // O(len(personName + bookName))
+        Trie.TrieNode person = Trie.TrieNode.search(root, personName);
+        Trie.TrieNode bookNode = Trie.TrieNode.search(book.root, bookName);
+        Trie.TrieNode bookNode2 = Trie.TrieNode.search(allBookBorrowed.root, bookName);
+
+        if (person == null || bookNode == null || bookNode2 == null){
+//            System.out.println("No such person");
+//            System.out.println("No such book");
+            return;
+        }
+        //if is in lib
+        if (bookNode.numberOfBooks - bookNode.numberOfBooksTaken > 0){
+            bookNode.numberOfBooksTaken++;
+            if (bookNode.personsOfBook == null){
+                bookNode.personsOfBook = new Trie.TrieNode();
+            }
+            if (bookNode2.personsOfBook == null){
+                bookNode2.personsOfBook = new Trie.TrieNode();
+            }
+            Trie.TrieNode.insert(bookNode.personsOfBook, personName);
+            Trie.TrieNode.insert(bookNode2.personsOfBook, personName);
+            if (person.booksOfPerson == null){
+                person.booksOfPerson = new Trie.TrieNode();
+            }
+            Trie.TrieNode.insert(person.booksOfPerson, bookName);
+        }
+
+    }
+
+    public void returnBook(String bookName, String personName, Book book) {    //O(len(bookName) + len(personName))
+        // O(len(personName + bookName))
+        Trie.TrieNode person = Trie.TrieNode.search(root, personName);  // O(len(personName))
+        Trie.TrieNode bookNode = Trie.TrieNode.search(book.root, bookName); // O(len(bookName))
+
+        if (person == null || bookNode == null){
+            return;
+        }
+        //if is in lib
+        if (person.timeInList.index > person.timeOutList.index){// O(len(personName + bookName))
+//            Trie.TrieNode personOfBook = Trie.TrieNode.search(bookNode.personsOfBook, personName);
+//            Trie.TrieNode bookOfPerson = Trie.TrieNode.search(person.booksOfPerson, bookName);
+//            if (personOfBook != null && bookOfPerson != null){ //todo: check
+//                bookNode.numberOfBooksTaken--;
+//            }
+            //delete personName from bookNode.personsOfBook and bookName from person.booksOfPerson
+            if (bookNode.personsOfBook != null && person.booksOfPerson != null){
+                Trie.TrieNode.remove(bookNode.personsOfBook, personName, 0);    //O(len(personName))
+                Trie.TrieNode.remove(person.booksOfPerson, bookName, 0);    //O(len(bookName))
+            }
+        }
+    }
+
+
+    public void allPersonCurrentBook(String name){
+        Trie.TrieNode person = Trie.TrieNode.search(root, name);
+        if (person == null){
+//            System.out.println("No such person");
+            System.out.println("empty");
+        }
+        else {
+
+            printPreOrder(person.booksOfPerson);
+        }
+    }
+
+    public void printPreOrder(Trie.TrieNode root){
+        Trie.TrieNode tmp = root;
+        if (tmp == null){
+            return;
+        }
+
     }
 
 
